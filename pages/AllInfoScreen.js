@@ -1,21 +1,21 @@
 import React from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { useData } from '../components/DataContext'; // Import the useData hook
 
-const AllInfoScreen = ({ route }) => {
-  const { data } = route.params;
-  console.log(data);
+const AllInfoScreen = () => {
+  const { combinedData } = useData(); // Access combinedData from the context
 
   const renderDataItem = ({ item }) => {
-    if (item.type === 'registration') {
-      return (
-        <View style={styles.item}>
-          <Text>Registration Number: {item.value}</Text>
-        </View>
-      );
-    } else if (item.type === 'name') {
+    if (item.type === 'name') {
       return (
         <View style={styles.item}>
           <Text>Name: {item.value}</Text>
+        </View>
+      );
+    } else if (item.type === 'regNo') {
+      return (
+        <View style={styles.item}>
+          <Text>Registration Number: {item.value}</Text>
         </View>
       );
     } else if (item.type === 'contact') {
@@ -25,15 +25,14 @@ const AllInfoScreen = ({ route }) => {
         </View>
       );
     }
-    // Add more conditions for other types of data if needed
 
-    return null; // Return null for unhandled types
+    return null;
   };
 
   return (
     <View style={styles.container}>
       <FlatList
-        data={data}
+        data={combinedData}
         renderItem={renderDataItem}
         keyExtractor={(item, index) => index.toString()}
         style={styles.list}
@@ -41,7 +40,6 @@ const AllInfoScreen = ({ route }) => {
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {

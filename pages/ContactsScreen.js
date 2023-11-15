@@ -1,37 +1,35 @@
 import React, { useState } from 'react';
 import { View, Button, StyleSheet, TextInput } from 'react-native';
+import { useData } from '../components/DataContext'; // Import the useData hook
+import Toast from 'react-native-toast-message';
 
-const ContactsScreen = ({ navigation }) => {
-  const [contacts, setContacts] = useState([]);
-  const [newContact, setNewContact] = useState('');
+const ContactScreen = ({ navigation }) => {
+  const { updateCombinedData } = useData(); // Access updateCombinedData from the context
+  const [contact, setContact] = useState('');
 
   const addContact = () => {
-    if (newContact.trim() !== '') {
-      const contactData = { type: 'contact', value: newContact };
-      setContacts((prevContacts) => [...prevContacts, contactData]);
-      setNewContact(''); // Clear the input field after adding
+    if (contact.trim() !== '') {
+      const newData = { type: 'contact', value: contact };
+      updateCombinedData(newData); // Update the shared data
+      setContact('');
+      Toast.show({
+        type: 'success',
+        text1: 'Data Added',
+        text2: `Contact: ${contact}`,
+        visibilityTime: 3000, // Display duration in milliseconds
+      });
     }
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter Contact"
-          value={newContact}
-          onChangeText={(text) => setNewContact(text)}
-        />
-        <Button title="Add" onPress={addContact} />
-      </View>
-
-      
-      <Button
-        title="View All Contacts"
-        onPress={() => {
-          navigation.navigate('AllInfo', { data: contacts });
-        }}
+      <TextInput
+        style={styles.input}
+        placeholder="Contact"
+        value={contact}
+        onChangeText={(text) => setContact(text)}
       />
+      <Button title="Add Contact" onPress={addContact} />
     </View>
   );
 };
@@ -39,20 +37,16 @@ const ContactsScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
-  },
-  inputContainer: {
-    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 10,
   },
   input: {
-    flex: 1,
-    height: 40,
     borderWidth: 1,
-    marginRight: 10,
-    paddingHorizontal: 10,
+    borderColor: '#ccc',
+    padding: 10,
+    marginBottom: 20,
+    width: '80%',
   },
 });
 
-export default ContactsScreen;
+export default ContactScreen;

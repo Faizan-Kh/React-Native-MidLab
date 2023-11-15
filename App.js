@@ -3,13 +3,14 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialIcons } from "@expo/vector-icons";
-
+import Toast from "react-native-toast-message";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import NameScreen from "./pages/NameScreen";
 import RegNoScreen from "./pages/RegNoScreen";
 import ContactsScreen from "./pages/ContactsScreen";
 import AllInfoScreen from "./pages/AllInfoScreen";
+import { DataProvider } from "./components/DataContext";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -54,7 +55,9 @@ const TabNavigator = () => {
 const App = () => {
   return (
     <NavigationContainer>
+      <DataProvider>
       <Stack.Navigator>
+
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="ProfileScreen" component={Profile} />
         <Stack.Screen
@@ -64,6 +67,9 @@ const App = () => {
         />
         <Stack.Screen name="AllInfo" component={AllInfoScreen}/>
       </Stack.Navigator>
+      
+      </DataProvider>
+      <Toast ref={(ref) => Toast.setRef(ref)} />
     </NavigationContainer>
   );
 };

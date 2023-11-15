@@ -1,37 +1,35 @@
 import React, { useState } from 'react';
 import { View, Button, StyleSheet, TextInput } from 'react-native';
+import { useData } from '../components/DataContext'; // Import the useData hook
+import Toast from 'react-native-toast-message';
 
 const NameScreen = ({ navigation }) => {
-  const [names, setNames] = useState([]);
-  const [newName, setNewName] = useState('');
+  const { updateCombinedData } = useData(); // Access updateCombinedData from the context
+  const [name, setName] = useState('');
 
   const addName = () => {
-    if (newName.trim() !== '') {
-      const nameData = { type: 'name', value: newName };
-      setNames((prevNames) => [...prevNames, nameData]);
-      setNewName(''); // Clear the input field after adding
+    if (name.trim() !== '') {
+      const newData = { type: 'name', value: name };
+      updateCombinedData(newData); // Update the shared data
+      setName('');
+      Toast.show({
+        type: 'success',
+        text1: 'Data Added',
+        text2: `Name: ${name}`,
+        visibilityTime: 3000, // Display duration in milliseconds
+      });
     }
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter Name"
-          value={newName}
-          onChangeText={(text) => setNewName(text)}
-        />
-        <Button title="Add" onPress={addName} />
-      </View>
-
-      
-      <Button
-        title="View All Names"
-        onPress={() => {
-          navigation.navigate('AllInfo', { data: names });
-        }}
+      <TextInput
+        style={styles.input}
+        placeholder="Name"
+        value={name}
+        onChangeText={(text) => setName(text)}
       />
+      <Button title="Add Name" onPress={addName} />
     </View>
   );
 };
@@ -39,19 +37,15 @@ const NameScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
-  },
-  inputContainer: {
-    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 10,
   },
   input: {
-    flex: 1,
-    height: 40,
     borderWidth: 1,
-    marginRight: 10,
-    paddingHorizontal: 10,
+    borderColor: '#ccc',
+    padding: 10,
+    marginBottom: 20,
+    width: '80%',
   },
 });
 
