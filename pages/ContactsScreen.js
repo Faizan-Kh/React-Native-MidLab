@@ -1,23 +1,16 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, FlatList, StyleSheet } from 'react-native';
+import { View, Button, StyleSheet, TextInput } from 'react-native';
 
-const ContactsScreen = () => {
-  const [data, setData] = useState([]);
-  const [contact, setContact] = useState('');
+const ContactsScreen = ({ navigation }) => {
+  const [contacts, setContacts] = useState([]);
+  const [newContact, setNewContact] = useState('');
 
   const addContact = () => {
-    if (contact.trim() !== '') {
-      setData(prevData => [...prevData, { key: String(prevData.length + 1), contact: contact }]);
-      setContact('');
+    if (newContact.trim() !== '') {
+      const contactData = { type: 'contact', value: newContact };
+      setContacts((prevContacts) => [...prevContacts, contactData]);
+      setNewContact(''); // Clear the input field after adding
     }
-  };
-
-  const renderItem = ({ item }) => {
-    return (
-      <View style={styles.item}>
-        <Text>{item.contact}</Text>
-      </View>
-    );
   };
 
   return (
@@ -25,17 +18,19 @@ const ContactsScreen = () => {
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
-          placeholder="Contact"
-          value={contact}
-          onChangeText={text => setContact(text)}
+          placeholder="Enter Contact"
+          value={newContact}
+          onChangeText={(text) => setNewContact(text)}
         />
-        <Button title="Add Contact" onPress={addContact} />
+        <Button title="Add" onPress={addContact} />
       </View>
-      <FlatList
-        data={data}
-        renderItem={renderItem}
-        keyExtractor={item => item.key}
-        style={styles.list}
+
+      
+      <Button
+        title="View All Contacts"
+        onPress={() => {
+          navigation.navigate('AllInfo', { data: contacts });
+        }}
       />
     </View>
   );
@@ -57,15 +52,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginRight: 10,
     paddingHorizontal: 10,
-  },
-  list: {
-    flex: 1,
-  },
-  item: {
-    backgroundColor: '#84b8dc',
-    padding: 20,
-    marginVertical: 8,
-    marginHorizontal: 16,
   },
 });
 

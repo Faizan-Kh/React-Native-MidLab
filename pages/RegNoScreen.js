@@ -1,49 +1,38 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, FlatList, StyleSheet } from 'react-native';
+import { View, Button, StyleSheet, TextInput } from 'react-native';
 
 const RegNoScreen = ({ navigation }) => {
-  const [data, setData] = useState([]);
-  const [regNo, setRegNo] = useState('');
+  const [regNos, setRegNos] = useState([]);
+  const [newRegNo, setNewRegNo] = useState('');
 
   const addRegNo = () => {
-    if (regNo.trim() !== '') {
-      setData(prevData => [...prevData, { key: String(prevData.length + 1), regNo: regNo }]);
-      setRegNo('');
+    if (newRegNo.trim() !== '') {
+      const regData = { type: 'registration', value: newRegNo };
+      setRegNos((prevRegNos) => [...prevRegNos, regData]);
+      setNewRegNo(''); // Clear the input field after adding
     }
   };
-
-  const renderItem = ({ item }) => {
-    return (
-      <View style={styles.item}>
-        <Text>{item.regNo}</Text>
-      </View>
-    );
-  };
-
-  const navigateToAllInfo = () => {
-    if (data.length > 0) {
-      navigation.navigate('AllInfoScreen', { regData: data }); // Pass all registration data to AllInfoScreen
-    }
-  };
+  
 
   return (
     <View style={styles.container}>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
-          placeholder="Registration Number"
-          value={regNo}
-          onChangeText={text => setRegNo(text)}
+          placeholder="Enter Registration Number"
+          value={newRegNo}
+          onChangeText={(text) => setNewRegNo(text)}
         />
-        <Button title="Add Reg No" onPress={addRegNo} />
+        <Button title="Add" onPress={addRegNo} />
       </View>
-      <FlatList
-        data={data}
-        renderItem={renderItem}
-        keyExtractor={item => item.key}
-        style={styles.list}
+
+      {/* Button to navigate to AllInfo screen */}
+      <Button
+        title="View All Registration Numbers"
+        onPress={() => {
+          navigation.navigate('AllInfo', { data: regNos });
+        }}
       />
-      <Button title="Go to All Info" onPress={navigateToAllInfo} />
     </View>
   );
 };
@@ -64,15 +53,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginRight: 10,
     paddingHorizontal: 10,
-  },
-  list: {
-    flex: 1,
-  },
-  item: {
-    backgroundColor: '#84b8dc',
-    padding: 20,
-    marginVertical: 8,
-    marginHorizontal: 16,
   },
 });
 

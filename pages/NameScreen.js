@@ -1,23 +1,16 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, FlatList, StyleSheet } from 'react-native';
+import { View, Button, StyleSheet, TextInput } from 'react-native';
 
-const NameScreen = () => {
-  const [data, setData] = useState([]);
-  const [name, setName] = useState('');
+const NameScreen = ({ navigation }) => {
+  const [names, setNames] = useState([]);
+  const [newName, setNewName] = useState('');
 
   const addName = () => {
-    if (name.trim() !== '') {
-      setData(prevData => [...prevData, { key: String(prevData.length + 1), name: name }]);
-      setName('');
+    if (newName.trim() !== '') {
+      const nameData = { type: 'name', value: newName };
+      setNames((prevNames) => [...prevNames, nameData]);
+      setNewName(''); // Clear the input field after adding
     }
-  };
-
-  const renderItem = ({ item }) => {
-    return (
-      <View style={styles.item}>
-        <Text>{item.name}</Text>
-      </View>
-    );
   };
 
   return (
@@ -25,17 +18,19 @@ const NameScreen = () => {
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
-          placeholder="Name"
-          value={name}
-          onChangeText={text => setName(text)}
+          placeholder="Enter Name"
+          value={newName}
+          onChangeText={(text) => setNewName(text)}
         />
-        <Button title="Add Name" onPress={addName} />
+        <Button title="Add" onPress={addName} />
       </View>
-      <FlatList
-        data={data}
-        renderItem={renderItem}
-        keyExtractor={item => item.key}
-        style={styles.list}
+
+      
+      <Button
+        title="View All Names"
+        onPress={() => {
+          navigation.navigate('AllInfo', { data: names });
+        }}
       />
     </View>
   );
@@ -57,15 +52,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginRight: 10,
     paddingHorizontal: 10,
-  },
-  list: {
-    flex: 1,
-  },
-  item: {
-    backgroundColor: '#84b8dc',
-    padding: 20,
-    marginVertical: 8,
-    marginHorizontal: 16,
   },
 });
 
